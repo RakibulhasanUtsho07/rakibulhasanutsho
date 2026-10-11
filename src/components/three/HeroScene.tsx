@@ -16,6 +16,8 @@ export default function HeroScene() {
     let renderer: any;
     let animationFrame = 0;
     let resizeObserver: ResizeObserver | null = null;
+    let intersectionObserver: IntersectionObserver | null = null;
+    let isInViewport = true;
     let scrollTween: gsap.core.Tween | null = null;
     let scene: any;
     let camera: any;
@@ -155,6 +157,10 @@ export default function HeroScene() {
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        if (reducedMotion && isInViewport && document.visibilityState === "visible") {
+          camera.lookAt(0, 0, 0);
+          renderer.render(scene, camera);
+        }
       };
 
       resizeObserver = new ResizeObserver(resize);
@@ -176,7 +182,7 @@ export default function HeroScene() {
 
       const render = () => {
         animationFrame = 0;
-        if (document.visibilityState !== "visible") return;
+        if (document.visibilityState !== "visible" || !isInViewport) return;
 
         if (!reducedMotion) {
           group.rotation.y += 0.0018;
@@ -188,14 +194,29 @@ export default function HeroScene() {
         }
         camera.lookAt(0, 0, 0);
         renderer.render(scene, camera);
-        animationFrame = window.requestAnimationFrame(render);
-      };
-
-      const startRendering = () => {
-        if (!animationFrame && document.visibilityState === "visible") {
+        if (!reducedMotion) {
           animationFrame = window.requestAnimationFrame(render);
         }
       };
+
+      const startRendering = () => {
+        if (!animationFrame && document.visibilityState === "visible" && isInViewport) {
+          animationFrame = window.requestAnimationFrame(render);
+        }
+      };
+
+      if ("IntersectionObserver" in window) {
+        intersectionObserver = new IntersectionObserver(([entry]) => {
+          isInViewport = Boolean(entry?.isIntersecting);
+          if (isInViewport) {
+            startRendering();
+          } else if (animationFrame) {
+            window.cancelAnimationFrame(animationFrame);
+            animationFrame = 0;
+          }
+        }, { threshold: 0.01 });
+        intersectionObserver.observe(host);
+      }
 
       visibilityHandler = () => {
         if (document.visibilityState === "hidden") {
@@ -227,6 +248,7 @@ export default function HeroScene() {
     return () => {
       if (animationFrame) window.cancelAnimationFrame(animationFrame);
       resizeObserver?.disconnect();
+      intersectionObserver?.disconnect();
       if (pointerHandler) host.removeEventListener("pointermove", pointerHandler);
       if (pointerLeaveHandler) host.removeEventListener("pointerleave", pointerLeaveHandler);
       if (visibilityHandler) document.removeEventListener("visibilitychange", visibilityHandler);
