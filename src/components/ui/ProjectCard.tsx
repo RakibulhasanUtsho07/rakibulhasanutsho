@@ -51,9 +51,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     const normalizedX = (event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5;
     const normalizedY = (event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5;
 
-    tiltXTo.current(normalizedX * 5);
-    tiltYTo.current(-normalizedY * 5);
-    liftTo.current?.(-4);
+    event.currentTarget.style.setProperty("--spot-x", (normalizedX + 0.5) * 100 + "%");
+    event.currentTarget.style.setProperty("--spot-y", (normalizedY + 0.5) * 100 + "%");
+    tiltXTo.current(normalizedX * 4.5);
+    tiltYTo.current(-normalizedY * 4.5);
+    liftTo.current?.(-5);
   }
 
   function resetPointer() {
@@ -82,7 +84,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <div className="project-card-stack">{project.stack.slice(0, 4).map((skill) => <span key={skill}>{skill}</span>)}</div>
       <div className="project-card-footer">
         <span className="project-card-status">{project.status}</span>
-        <Link className="project-card-link" href={"/projects/" + project.slug}>Read case study ↗</Link>
+        {project.githubUrl ? <a className="project-card-link" href={project.githubUrl} target="_blank" rel="noreferrer">GitHub ↗</a> : <Link className="project-card-link" href={"/projects/" + project.slug}>Read case study ↗</Link>}
       </div>
     </article>
   );
