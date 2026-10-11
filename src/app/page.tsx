@@ -15,7 +15,7 @@ const skillGroups = [
   { title: "Frontend", skills: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "Accessible UI"] },
   { title: "Backend", skills: ["Node.js", "Express.js", "REST APIs", "Authentication", "RBAC"] },
   { title: "Data & tools", skills: ["MongoDB", "Mongoose", "Git", "GitHub", "Vercel", "Recharts"] },
-  { title: "Motion & spatial", skills: ["GSAP", "ScrollTrigger", "Three.js", "CesiumJS", "GeoJSON", "WebGL"] },
+  { title: "Motion & interaction", skills: ["GSAP", "ScrollTrigger", "Three.js", "Framer Motion", "WebGL", "Micro-interactions"] },
 ];
 
 const processSteps = [
@@ -46,7 +46,7 @@ export default function Home() {
                 <span className="hero-title-line hero-title-line--accent" data-hero-title-line>move beyond.</span>
               </h1>
               <p className="hero-description" data-hero-copy>
-                I engineer full-stack products, thoughtful interfaces, and interactive 3D experiences — from resilient APIs to worlds you can explore.
+                I build full-stack products and thoughtful interfaces — from reliable APIs and operations dashboards to polished customer experiences.
               </p>
               <div className="hero-actions" data-hero-actions>
                 <Link className="button button-primary" href="#work">Explore my work <span aria-hidden="true">↗</span></Link>
@@ -55,19 +55,19 @@ export default function Home() {
               <div className="hero-meta" data-hero-meta>
                 <div className="hero-meta-item"><span className="hero-meta-label">FOCUS</span><span className="hero-meta-value">Full-stack engineering</span></div>
                 <div className="hero-meta-divider" />
-                <div className="hero-meta-item"><span className="hero-meta-label">EXPLORING</span><span className="hero-meta-value">3D web & geospatial tech</span></div>
+                <div className="hero-meta-item"><span className="hero-meta-label">EXPLORING</span><span className="hero-meta-value">Motion & interaction</span></div>
               </div>
             </div>
             <div className="hero-art" data-hero-art>
-              <div className="hero-art-topline"><span>INTERACTIVE SYSTEMS</span><span className="hero-art-coordinates">23.8103° N / 90.4125° E</span></div>
+              <div className="hero-art-topline"><span>INTERACTIVE SYSTEMS</span><span className="hero-art-coordinates">MOTION / REALTIME</span></div>
               <div className="hero-scene-frame">
                 <div className="hero-scene-orbit hero-scene-orbit--outer" aria-hidden="true" />
                 <div className="hero-scene-orbit hero-scene-orbit--inner" aria-hidden="true" />
                 <HeroSceneLoader />
-                <div className="scene-label scene-label--top"><span className="scene-label-dot" />3D / SPATIAL</div>
-                <div className="scene-label scene-label--bottom"><span>SCROLL TO ROTATE</span><span aria-hidden="true">↓</span></div>
+                <div className="scene-label scene-label--top"><span className="scene-label-dot" />PRODUCT / UI</div>
+                <div className="scene-label scene-label--bottom"><span>INTERACTION / MOTION</span><span aria-hidden="true">↓</span></div>
               </div>
-              <div className="hero-art-bottomline"><span>01 — ENGINEERED WITH INTENT</span><span>WEB · DATA · DIMENSION</span></div>
+              <div className="hero-art-bottomline"><span>01 — ENGINEERED WITH INTENT</span><span>PRODUCT · DATA · SYSTEMS</span></div>
             </div>
           </div>
           <a className="hero-scroll-cue" href="#work" aria-label="Scroll to selected work"><span className="scroll-cue-line" /><span>SCROLL TO EXPLORE</span></a>
@@ -80,7 +80,7 @@ export default function Home() {
             <div className="ticker-track" aria-hidden="true">
               {[0, 1].map((copy) => (
                 <div className="ticker-group" key={copy}>
-                  {["NEXT.JS", "REACT", "TYPESCRIPT", "NODE.JS", "GSAP", "THREE.JS", "CESIUMJS", "MONGODB"].map((item) => (
+                  {["NEXT.JS", "REACT", "TYPESCRIPT", "NODE.JS", "GSAP", "FRAMER MOTION", "STRIPE", "MONGODB"].map((item) => (
                     <span className="ticker-item" key={item + copy}><span className="ticker-star">✳</span>{item}</span>
                   ))}
                 </div>
@@ -100,20 +100,24 @@ export default function Home() {
             </div>
             <article className="featured-project" data-reveal>
               <div className="featured-project-copy">
-                <div className="project-overline"><span className="project-number">01</span><span className="project-status"><span className="status-pulse" /> IN DEVELOPMENT</span></div>
-                <p className="project-category">GEOSPATIAL / 3D WEB</p>
-                <h3>Explore the city<br /><em>in another dimension.</em></h3>
-                <p className="project-description">A Dhaka-focused 3D mapping pilot bringing building footprints, road geometry, nearby services, and property-discovery concepts into one interactive experience.</p>
-                <div className="tag-list">{featuredProject.stack.map((item) => <span className="tech-tag" key={item}>{item}</span>)}</div>
+                <div className="project-overline">
+                  <span className="project-number">{featuredProject.number}</span>
+                  <span className="project-status"><span className="status-pulse" /> {featuredProject.status.toUpperCase()}</span>
+                </div>
+                <p className="project-category">{featuredProject.category.toUpperCase()}</p>
+                <h3>Better money tools.<br /><em>Built around real workflows.</em></h3>
+                <p className="project-description">{featuredProject.summary}</p>
+                <div className="tag-list">{featuredProject.stack.slice(0, 6).map((item) => <span className="tech-tag" key={item}>{item}</span>)}</div>
                 <div className="project-actions">
                   <Link className="text-link" href={"/projects/" + featuredProject.slug}>Explore case study <span aria-hidden="true">↗</span></Link>
-                  <a className="text-link text-link-muted" href={featuredProject.githubUrl} target="_blank" rel="noreferrer">Source code <span aria-hidden="true">↗</span></a>
+                  <a className="text-link text-link-muted" href={featuredProject.githubUrl} target="_blank" rel="noreferrer">Frontend source <span aria-hidden="true">↗</span></a>
+                  {featuredProject.relatedLinks?.[0] ? <a className="text-link text-link-muted" href={featuredProject.relatedLinks[0].url} target="_blank" rel="noreferrer">Backend API <span aria-hidden="true">↗</span></a> : null}
                 </div>
               </div>
               <div className="featured-project-art">
-                <div className="featured-art-top"><span><span className="live-indicator" /> VISUALIZATION PREVIEW</span><span>MAP / 3D</span></div>
-                <ProjectVisual variant="map" />
-                <div className="featured-art-bottom"><span>BUILDINGS · ROADS · PLACES</span><span className="featured-art-coords">23°48&apos;37.1&quot;N 90°24&apos;45.0&quot;E</span></div>
+                <div className="featured-art-top"><span><span className="live-indicator" /> SELECTED PROJECT / FRONTEND</span><span>FINTECH / SYSTEMS</span></div>
+                <ProjectVisual variant={featuredProject.variant} />
+                <div className="featured-art-bottom"><span>WALLET · KYC · OPERATIONS</span><span className="featured-art-coords">UI + API</span></div>
               </div>
             </article>
             <div className="projects-subheading" data-reveal>
@@ -132,7 +136,7 @@ export default function Home() {
           <div className="page-width stack-content">
             <div className="section-heading section-heading-light" data-reveal>
               <div><p className="section-kicker"><span>03</span> / THE TOOLKIT</p><h2 className="section-title" id="stack-title">The right tool<br /><em>for the right job.</em></h2></div>
-              <p className="section-intro">A practical stack across product UI, backend workflows, data, and spatial interfaces. Tools are chosen for the problem, not for the trend.</p>
+              <p className="section-intro">A practical stack across product UI, backend workflows, data, and interaction design. Tools are chosen for the problem, not for the trend.</p>
             </div>
             <div className="skill-groups" data-stagger>
               {skillGroups.map((group, index) => (
@@ -171,7 +175,7 @@ export default function Home() {
               <p className="section-kicker"><span>05</span> / A LITTLE ABOUT ME</p>
               <h2 className="section-title" id="about-title">I like solving problems<br />with <em>clarity and curiosity.</em></h2>
               <p>I’m a Bangladesh-based developer focused on building responsive web applications with React, Next.js, Node.js, Express, MongoDB, and TypeScript.</p>
-              <p>My projects span role-based dashboards, authentication and API workflows, e-commerce experiences, and an evolving 3D geospatial platform. I care about maintainable architecture just as much as the details people interact with.</p>
+              <p>My projects span fintech interfaces, authentication and API workflows, product and order management, and booking experiences. I care about maintainable architecture just as much as the details people interact with.</p>
               <div className="about-values"><span>BUILD WITH PURPOSE</span><span>KEEP LEARNING</span><span>MAKE DETAILS MATTER</span></div>
             </div>
           </div>
