@@ -184,7 +184,7 @@ export default function Home() {
             <p className="contact-overline">HAVE A GOOD PROBLEM TO SOLVE?</p>
             <h2 id="contact-title">Let’s make<br /><em>something meaningful.</em></h2>
             <p className="contact-description">Open to connecting with developers, teams, and people building useful things for the web.</p>
-            <a className="button button-primary button-large" href={"mailto:" + site.email}>Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+            <a className="button button-primary button-large" href={site.linkedinUrl} target="_blank" rel="noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
             <div className="contact-orbit contact-orbit--one" aria-hidden="true" /><div className="contact-orbit contact-orbit--two" aria-hidden="true" />
           </div>
         </section>
