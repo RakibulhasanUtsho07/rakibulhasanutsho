@@ -33,10 +33,12 @@ export default function PortfolioMotion() {
           }, 0.36);
 
         gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
-          gsap.fromTo(element, { y: 32, opacity: 0 }, {
+          gsap.fromTo(element, { y: 32, opacity: 0, scale: 0.99, filter: "blur(6px)" }, {
             y: 0,
             opacity: 1,
-            duration: 0.85,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.9,
             ease: "power3.out",
             scrollTrigger: {
               trigger: element,
@@ -50,11 +52,12 @@ export default function PortfolioMotion() {
           const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
           if (!items.length) return;
 
-          gsap.fromTo(items, { y: 26, opacity: 0 }, {
+          gsap.fromTo(items, { y: 30, opacity: 0, rotationX: 2, transformPerspective: 900 }, {
             y: 0,
             opacity: 1,
-            duration: 0.7,
-            stagger: 0.11,
+            rotationX: 0,
+            duration: 0.78,
+            stagger: 0.12,
             ease: "power3.out",
             scrollTrigger: {
               trigger: group,
@@ -62,6 +65,23 @@ export default function PortfolioMotion() {
               once: true,
             },
           });
+
+          const projectPreviews = group.querySelectorAll<HTMLElement>(".project-card .project-visual");
+          if (projectPreviews.length) {
+            gsap.fromTo(projectPreviews, { y: 20, opacity: 0.45, scale: 0.94 }, {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.9,
+              stagger: 0.13,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: group,
+                start: "top 82%",
+                once: true,
+              },
+            });
+          }
         });
 
         gsap.to(".scroll-progress__bar", {
