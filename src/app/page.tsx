@@ -113,7 +113,7 @@ export default function Home() {
               <div className="featured-project-art">
                 <div className="featured-art-top"><span><span className="live-indicator" /> VISUALIZATION PREVIEW</span><span>MAP / 3D</span></div>
                 <ProjectVisual variant="map" />
-                <div className="featured-art-bottom"><span>BUILDINGS · ROADS · PLACES</span><span className="featured-art-coords">23°48'37.1"N 90°24'45.0"E</span></div>
+                <div className="featured-art-bottom"><span>BUILDINGS · ROADS · PLACES</span><span className="featured-art-coords">23°48&apos;37.1&quot;N 90°24&apos;45.0&quot;E</span></div>
               </div>
             </article>
             <div className="projects-subheading" data-reveal>
