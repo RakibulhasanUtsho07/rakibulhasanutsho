@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Utsho.dev — Developer Portfolio
 
-## Getting Started
+An immersive, motion-led portfolio for Rakibul Hasan Utsho, a Bangladesh-based full-stack developer.
 
-First, run the development server:
+## Experience
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Scroll-driven page reveals and timelines with GSAP and ScrollTrigger.
+- A lazy-loaded Three.js hero scene with wireframe geometry, spatial nodes, camera parallax, and reduced-motion support.
+- Responsive selected-work gallery and dedicated project case-study routes.
+- Clear project status labels that distinguish ongoing work from live projects and engineering showcases.
+- SEO metadata, responsive navigation, accessible links, and fallback artwork if WebGL cannot initialize.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Next.js App Router, React, TypeScript, Tailwind CSS v4, GSAP, Three.js.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local development
 
-## Learn More
+Install Node.js and npm, then run:
 
-To learn more about Next.js, take a look at the following resources:
+- npm install
+- npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open http://localhost:3000.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Quality checks:
 
-## Deploy on Vercel
+- npm run lint
+- npm run build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Project descriptions and technology tags are maintained in src/data/projects.ts. Personal links and contact details live in src/data/site.ts.
+
+The Three.js hero is decorative and lazy-loaded. The page remains useful without WebGL and respects the user's reduced-motion preference. The 3D Geospatial Platform is presented as a work in progress; illustrative property data and future ideas are not represented as production functionality.
+
+## Deployment
+
+Deploy the repository through Vercel or another platform that supports Next.js. Set the production domain in deployment settings before sharing a canonical URL.
