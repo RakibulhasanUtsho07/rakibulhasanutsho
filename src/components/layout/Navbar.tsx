@@ -46,7 +46,7 @@ export default function Navbar() {
           {navItems.map((item) => (
             <Link href={item.href} key={item.href} onClick={closeMenu}>{item.label}</Link>
           ))}
-          <a href={"mailto:" + site.email} onClick={closeMenu}>Get in touch ↗</a>
+          <a href={site.linkedinUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>Get in touch ↗</a>
         </div>
       </nav>
     </header>
