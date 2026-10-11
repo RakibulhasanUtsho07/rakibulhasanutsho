@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="page-width">
         <div className="footer-main">
           <div className="footer-brand-block">
-            <Link className="brand" href="#home" aria-label="Return to top">
+            <Link className="brand" href="/#home" aria-label="Return to top">
               <span className="brand-mark">U</span>
               <span className="brand-name">UTSHO<span>.DEV</span></span>
             </Link>
@@ -16,7 +16,7 @@ export default function Footer() {
           <nav className="footer-links" aria-label="Social links">
             <a href={site.githubUrl} target="_blank" rel="noreferrer">GitHub ↗</a>
             <a href={site.linkedinUrl} target="_blank" rel="noreferrer">LinkedIn ↗</a>
-            <a href={"mailto:" + site.email}>Email ↗</a>
+            <a href={site.realFoodsUrl} target="_blank" rel="noreferrer">Real Foods ↗</a>
           </nav>
         </div>
         <div className="footer-bottom">
