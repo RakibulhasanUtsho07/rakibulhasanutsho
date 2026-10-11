@@ -7,9 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export default function PortfolioMotion() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    const media = gsap.matchMedia();
+    const motionPreference = gsap.matchMedia();
 
-    media.add("(prefers-reduced-motion: no-preference)", () => {
+    motionPreference.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -97,13 +97,52 @@ export default function PortfolioMotion() {
             scrub: 1,
           },
         });
+
+        gsap.to(".about-monogram", {
+          y: -18,
+          rotation: 3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".about-section",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        });
+      });
+
+      const desktopMotion = gsap.matchMedia();
+      desktopMotion.add("(min-width: 900px)", () => {
+        const featuredVisual = document.querySelector<HTMLElement>(".featured-project-art .project-visual");
+        if (!featuredVisual) return;
+
+        gsap.fromTo(featuredVisual, {
+          yPercent: 4,
+          scale: 0.96,
+          rotationY: -3,
+          transformPerspective: 1100,
+        }, {
+          yPercent: -4,
+          scale: 1.025,
+          rotationY: 2,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".featured-project",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8,
+          },
+        });
       });
 
       requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => context.revert();
+      return () => {
+        context.revert();
+        desktopMotion.revert();
+      };
     });
 
-    return () => media.revert();
+    return () => motionPreference.revert();
   }, []);
 
   return (

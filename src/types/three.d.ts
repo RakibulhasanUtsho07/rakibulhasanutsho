@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Minimal declarations for the Three.js APIs used by the hero scene. */
 declare module "three" {
   export const Scene: any;
   export const PerspectiveCamera: any;

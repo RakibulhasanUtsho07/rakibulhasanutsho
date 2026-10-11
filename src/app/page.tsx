@@ -50,7 +50,7 @@ export default function Home() {
               </p>
               <div className="hero-actions" data-hero-actions>
                 <Link className="button button-primary" href="#work">Explore my work <span aria-hidden="true">↗</span></Link>
-                <a className="button button-quiet" href={"mailto:" + site.email}>Let’s talk <span aria-hidden="true">↗</span></a>
+                <a className="button button-quiet" href={site.linkedinUrl} target="_blank" rel="noreferrer">Let’s connect <span aria-hidden="true">↗</span></a>
               </div>
               <div className="hero-meta" data-hero-meta>
                 <div className="hero-meta-item"><span className="hero-meta-label">FOCUS</span><span className="hero-meta-value">Full-stack engineering</span></div>
@@ -111,9 +111,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="featured-project-art">
-                <div className="featured-art-top"><span><span className="live-indicator" /> VISUALIZATION CONCEPT</span><span>MAP / 3D</span></div>
+                <div className="featured-art-top"><span><span className="live-indicator" /> VISUALIZATION PREVIEW</span><span>MAP / 3D</span></div>
                 <ProjectVisual variant="map" />
-                <div className="featured-art-bottom"><span>BUILDINGS · ROADS · PLACES</span><span className="featured-art-coords">23°48'37.1"N 90°24'45.0"E</span></div>
+                <div className="featured-art-bottom"><span>BUILDINGS · ROADS · PLACES</span><span className="featured-art-coords">23°48&apos;37.1&quot;N 90°24&apos;45.0&quot;E</span></div>
               </div>
             </article>
             <div className="projects-subheading" data-reveal>
@@ -184,7 +184,7 @@ export default function Home() {
             <p className="contact-overline">HAVE A GOOD PROBLEM TO SOLVE?</p>
             <h2 id="contact-title">Let’s make<br /><em>something meaningful.</em></h2>
             <p className="contact-description">Open to connecting with developers, teams, and people building useful things for the web.</p>
-            <a className="button button-primary button-large" href={"mailto:" + site.email}>Start a conversation <span aria-hidden="true">↗</span></a>
+            <a className="button button-primary button-large" href={site.linkedinUrl} target="_blank" rel="noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
             <div className="contact-orbit contact-orbit--one" aria-hidden="true" /><div className="contact-orbit contact-orbit--two" aria-hidden="true" />
           </div>
         </section>
