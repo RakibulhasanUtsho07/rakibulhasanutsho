@@ -54,8 +54,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="project-page-art" data-reveal><ProjectVisual variant={project.variant} /></div>
           <div className="project-details-grid">
             <section data-reveal>
-              <h2>What the project explores</h2>
+              <h2>What this project includes</h2>
               <ul>{project.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
+              {project.contribution ? <div className="project-contribution"><h2>My contribution</h2><p>{project.contribution}</p></div> : null}
               <h2 style={{ marginTop: 38 }}>Next steps</h2>
               <ul>{project.nextSteps.map((step) => <li key={step}>{step}</li>)}</ul>
             </section>
@@ -65,7 +66,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <h3 style={{ marginTop: 29 }}>Project links</h3>
               {project.githubUrl ? <a className="project-detail-link" href={project.githubUrl} target="_blank" rel="noreferrer">View source on GitHub ↗</a> : null}
               {project.liveUrl ? <a className="project-detail-link" href={project.liveUrl} target="_blank" rel="noreferrer">Visit live website ↗</a> : null}
-              {!project.githubUrl && !project.liveUrl ? <p>Public repository and live links will be added when the exact shareable destinations are confirmed.</p> : null}
+              {project.relatedLinks?.map((link) => <a className="project-detail-link" href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label} ↗</a>)}
+              {!project.githubUrl && !project.liveUrl && !project.relatedLinks?.length ? <p>Public repository and live links will be added when the exact shareable destinations are confirmed.</p> : null}
             </aside>
           </div>
         </div>

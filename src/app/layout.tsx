@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Utsho.dev",
   },
   description:
-    "Portfolio of Rakibul Hasan Utsho, a Bangladesh-based full-stack developer building web applications, thoughtful interfaces, and interactive 3D experiences.",
+    "Portfolio of Rakibul Hasan Utsho, a Bangladesh-based full-stack developer building thoughtful interfaces, reliable APIs, and polished digital products.",
   applicationName: "Utsho.dev",
   keywords: [
     "Rakibul Hasan Utsho",
@@ -32,7 +32,9 @@ export const metadata: Metadata = {
     "TypeScript",
     "GSAP",
     "Three.js",
-    "CesiumJS",
+    "Framer Motion",
+    "Digital Wallet",
+    "SaaS",
   ],
   authors: [{ name: "Rakibul Hasan Utsho" }],
   creator: "Rakibul Hasan Utsho",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     siteName: "Utsho.dev",
     title: "Rakibul Hasan Utsho — Full-Stack Developer",
-    description: "Full-stack engineering, interactive interfaces, and 3D web experiments.",
+    description: "Full-stack engineering, interactive interfaces, and digital product experiences.",
   },
   twitter: {
     card: "summary_large_image",
