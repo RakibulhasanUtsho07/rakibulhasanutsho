@@ -235,7 +235,7 @@ export default function HeroScene() {
         scrollTween = gsap.to(scrollState, {
           turn: 1,
           ease: "none",
-          scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
+          scrollTrigger: { id: "hero-scene-scroll", trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
         });
       }
 
@@ -252,7 +252,7 @@ export default function HeroScene() {
       if (pointerHandler) host.removeEventListener("pointermove", pointerHandler);
       if (pointerLeaveHandler) host.removeEventListener("pointerleave", pointerLeaveHandler);
       if (visibilityHandler) document.removeEventListener("visibilitychange", visibilityHandler);
-      scrollTween?.scrollTrigger?.kill();
+      ScrollTrigger.getById("hero-scene-scroll")?.kill();
       scrollTween?.kill();
       if (group) gsap.killTweensOf(group.scale);
       scene?.traverse((object: any) => {
