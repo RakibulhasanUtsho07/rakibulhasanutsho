@@ -22,15 +22,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     if (!card || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const context = gsap.context(() => {
-      tiltXTo.current = gsap.quickTo(card, "--tilt-x", {
+      tiltXTo.current = gsap.quickTo(card, "rotationY", {
         duration: 0.35,
         ease: "power3.out",
       });
-      tiltYTo.current = gsap.quickTo(card, "--tilt-y", {
+      tiltYTo.current = gsap.quickTo(card, "rotationX", {
         duration: 0.35,
         ease: "power3.out",
       });
-      liftTo.current = gsap.quickTo(card, "--lift", {
+      liftTo.current = gsap.quickTo(card, "y", {
         duration: 0.3,
         ease: "power3.out",
       });
