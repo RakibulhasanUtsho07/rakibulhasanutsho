@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import gsap from "gsap";
 import type { Project } from "@/data/projects";
 import ProjectVisual from "@/components/ui/ProjectVisual";
@@ -43,7 +44,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     };
   }, []);
 
-  function handlePointerMove(event: React.PointerEvent<HTMLElement>) {
+  function handlePointerMove(event: ReactPointerEvent<HTMLElement>) {
     if (event.pointerType === "touch" || !tiltXTo.current || !tiltYTo.current) return;
 
     const bounds = event.currentTarget.getBoundingClientRect();
