@@ -1,11 +1,18 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any -- Three.js uses a deliberately small local type shim in this project. */
-
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+
+type DisposableResource = { dispose: () => void };
+type AdjustableMaterial = DisposableResource & { transparent: boolean; opacity: number };
+type RendererHandle = {
+  domElement: HTMLCanvasElement;
+  setPixelRatio: (ratio: number) => void;
+  setSize: (width: number, height: number, updateStyle?: boolean) => void;
+  setClearColor: (color: number, alpha?: number) => void;
+  render: (scene: unknown, camera: unknown) => void;
+  dispose: () => void;
+};
 
 export default function HeroScene() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -15,257 +22,215 @@ export default function HeroScene() {
     if (!host) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let renderer: any;
-    let animationFrame = 0;
+    let renderer: RendererHandle | null = null;
+    let frameId = 0;
     let resizeObserver: ResizeObserver | null = null;
     let intersectionObserver: IntersectionObserver | null = null;
-    let isInViewport = true;
-    let scrollTween: gsap.core.Tween | null = null;
-    let scene: any;
-    let camera: any;
-    let group: any;
-    let pointerHandler: ((event: PointerEvent) => void) | null = null;
-    let pointerLeaveHandler: (() => void) | null = null;
-    let visibilityHandler: (() => void) | null = null;
+    let visible = true;
     let pointerX = 0;
     let pointerY = 0;
-    const scrollState = { turn: 0 };
+    let targetX = 0;
+    let targetY = 0;
+    let removeRuntimeListeners = () => {};
+    const geometries: DisposableResource[] = [];
+    const materials: AdjustableMaterial[] = [];
 
     try {
-      gsap.registerPlugin(ScrollTrigger);
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
       camera.position.set(0, 0, 6.8);
 
-      renderer = new THREE.WebGLRenderer({
+      const rendererInstance: RendererHandle = new THREE.WebGLRenderer({
         alpha: true,
         antialias: window.devicePixelRatio < 2,
         powerPreference: "low-power",
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      renderer.setSize(host.clientWidth || 520, host.clientHeight || 520, false);
-      renderer.setClearColor(0x080c16, 0);
-      host.appendChild(renderer.domElement);
+      renderer = rendererInstance;
+      rendererInstance.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      rendererInstance.setSize(Math.max(host.clientWidth, 1), Math.max(host.clientHeight, 1), false);
+      rendererInstance.setClearColor(0x0c0d0f, 0);
+      host.appendChild(rendererInstance.domElement);
 
-      group = new THREE.Group();
+      const group = new THREE.Group();
       scene.add(group);
 
-      const innerCore = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(1.02, 2),
-        new THREE.MeshBasicMaterial({
-          color: 0x10264b,
-          transparent: true,
-          opacity: 0.62,
-        }),
-      );
-      group.add(innerCore);
+      const coreGeometry = new THREE.IcosahedronGeometry(1.02, 2);
+      const coreMaterial = new THREE.MeshBasicMaterial({ color: 0x242b17, transparent: true, opacity: 0.7 });
+      geometries.push(coreGeometry);
+      materials.push(coreMaterial);
+      group.add(new THREE.Mesh(coreGeometry, coreMaterial));
 
-      const wireShell = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(1.35, 2),
-        new THREE.MeshBasicMaterial({
-          color: 0x4b87ff,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.36,
-        }),
-      );
-      group.add(wireShell);
+      const shellGeometry = new THREE.IcosahedronGeometry(1.35, 2);
+      const shellMaterial = new THREE.MeshBasicMaterial({ color: 0xc9f25b, wireframe: true, transparent: true, opacity: 0.42 });
+      geometries.push(shellGeometry);
+      materials.push(shellMaterial);
+      group.add(new THREE.Mesh(shellGeometry, shellMaterial));
 
-      const innerShell = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(0.9, 1),
-        new THREE.MeshBasicMaterial({
-          color: 0x61dfe1,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.2,
-        }),
-      );
-      group.add(innerShell);
+      const innerGeometry = new THREE.IcosahedronGeometry(0.9, 1);
+      const innerMaterial = new THREE.MeshBasicMaterial({ color: 0xe9f7b6, wireframe: true, transparent: true, opacity: 0.2 });
+      geometries.push(innerGeometry);
+      materials.push(innerMaterial);
+      group.add(new THREE.Mesh(innerGeometry, innerMaterial));
 
-      const ringOne = new THREE.Mesh(
-        new THREE.TorusGeometry(1.79, 0.008, 8, 150),
-        new THREE.MeshBasicMaterial({ color: 0x5de1de, transparent: true, opacity: 0.5 }),
-      );
-      ringOne.rotation.x = 1.12;
-      ringOne.rotation.y = 0.32;
-      group.add(ringOne);
+      const outerRingGeometry = new THREE.TorusGeometry(1.79, 0.008, 8, 150);
+      const outerRingMaterial = new THREE.MeshBasicMaterial({ color: 0xd8f37a, transparent: true, opacity: 0.48 });
+      geometries.push(outerRingGeometry);
+      materials.push(outerRingMaterial);
+      const outerRing = new THREE.Mesh(outerRingGeometry, outerRingMaterial);
+      outerRing.rotation.x = 1.12;
+      outerRing.rotation.y = 0.32;
+      group.add(outerRing);
 
-      const ringTwo = new THREE.Mesh(
-        new THREE.TorusGeometry(1.94, 0.006, 8, 150),
-        new THREE.MeshBasicMaterial({ color: 0x3b73ee, transparent: true, opacity: 0.45 }),
-      );
-      ringTwo.rotation.x = 0.36;
-      ringTwo.rotation.y = -0.72;
-      group.add(ringTwo);
+      const innerRingGeometry = new THREE.TorusGeometry(1.94, 0.006, 8, 150);
+      const innerRingMaterial = new THREE.MeshBasicMaterial({ color: 0x98ad4d, transparent: true, opacity: 0.38 });
+      geometries.push(innerRingGeometry);
+      materials.push(innerRingMaterial);
+      const innerRing = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
+      innerRing.rotation.x = 0.36;
+      innerRing.rotation.y = -0.72;
+      group.add(innerRing);
 
-      const nodeCount = 260;
-      const nodePositions = new Float32Array(nodeCount * 3);
+      const nodeCount = 240;
+      const positions = new Float32Array(nodeCount * 3);
       const goldenAngle = Math.PI * (3 - Math.sqrt(5));
       for (let index = 0; index < nodeCount; index += 1) {
         const y = 1 - (index / (nodeCount - 1)) * 2;
         const radius = Math.sqrt(1 - y * y);
         const angle = goldenAngle * index;
         const offset = index * 3;
-        nodePositions[offset] = Math.cos(angle) * radius * 1.37;
-        nodePositions[offset + 1] = y * 1.37;
-        nodePositions[offset + 2] = Math.sin(angle) * radius * 1.37;
+        positions[offset] = Math.cos(angle) * radius * 1.37;
+        positions[offset + 1] = y * 1.37;
+        positions[offset + 2] = Math.sin(angle) * radius * 1.37;
       }
+      const pointsGeometry = new THREE.BufferGeometry();
+      pointsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+      const pointsMaterial = new THREE.PointsMaterial({ color: 0xf0f6d9, size: 0.024, transparent: true, opacity: 0.92, sizeAttenuation: true });
+      geometries.push(pointsGeometry);
+      materials.push(pointsMaterial);
+      group.add(new THREE.Points(pointsGeometry, pointsMaterial));
 
-      const nodeGeometry = new THREE.BufferGeometry();
-      nodeGeometry.setAttribute("position", new THREE.Float32BufferAttribute(nodePositions, 3));
-      group.add(new THREE.Points(
-        nodeGeometry,
-        new THREE.PointsMaterial({
-          color: 0x8dc5ff,
-          size: 0.026,
-          transparent: true,
-          opacity: 0.95,
-          sizeAttenuation: true,
-        }),
-      ));
-
-      const linePositions: number[] = [];
+      const linkPositions: number[] = [];
       for (let index = 0; index < nodeCount; index += 1) {
-        const nextIndex = (index + 13) % nodeCount;
-        const currentOffset = index * 3;
-        const nextOffset = nextIndex * 3;
-        linePositions.push(
-          nodePositions[currentOffset],
-          nodePositions[currentOffset + 1],
-          nodePositions[currentOffset + 2],
-          nodePositions[nextOffset],
-          nodePositions[nextOffset + 1],
-          nodePositions[nextOffset + 2],
+        const next = (index + 13) % nodeCount;
+        const a = index * 3;
+        const b = next * 3;
+        linkPositions.push(
+          positions[a], positions[a + 1], positions[a + 2],
+          positions[b], positions[b + 1], positions[b + 2],
         );
       }
       const linksGeometry = new THREE.BufferGeometry();
-      linksGeometry.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
-      group.add(new THREE.LineSegments(
-        linksGeometry,
-        new THREE.LineBasicMaterial({ color: 0x3d83f5, transparent: true, opacity: 0.12 }),
-      ));
+      linksGeometry.setAttribute("position", new THREE.Float32BufferAttribute(linkPositions, 3));
+      const linksMaterial = new THREE.LineBasicMaterial({ color: 0x9bbd36, transparent: true, opacity: 0.14 });
+      geometries.push(linksGeometry);
+      materials.push(linksMaterial);
+      group.add(new THREE.LineSegments(linksGeometry, linksMaterial));
 
-      const floorGrid = new THREE.GridHelper(7, 24, 0x23508a, 0x17365f);
+      const floorGrid = new THREE.GridHelper(7, 24, 0x3d4722, 0x252b18);
+      geometries.push(floorGrid.geometry);
       floorGrid.rotation.x = Math.PI / 2;
       floorGrid.position.z = -1.8;
-      (floorGrid.material as any).transparent = true;
-      (floorGrid.material as any).opacity = 0.24;
+      const gridMaterials = (Array.isArray(floorGrid.material) ? floorGrid.material : [floorGrid.material]) as AdjustableMaterial[];
+      gridMaterials.forEach((material: AdjustableMaterial) => {
+        material.transparent = true;
+        material.opacity = 0.22;
+        materials.push(material);
+      });
       group.add(floorGrid);
 
       const resize = () => {
-        if (!renderer || !camera) return;
+        if (!renderer) return;
         const width = Math.max(host.clientWidth, 1);
         const height = Math.max(host.clientHeight, 1);
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        if (reducedMotion && isInViewport && document.visibilityState === "visible") {
+        if (reducedMotion && visible && document.visibilityState === "visible") {
+          camera.lookAt(0, 0, 0);
+          renderer.render(scene, camera);
+        }
+      };
+      resizeObserver = new ResizeObserver(resize);
+      resizeObserver.observe(host);
+
+      const pointerMove = (event: PointerEvent) => {
+        const bounds = host.getBoundingClientRect();
+        targetX = ((event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5) * 2;
+        targetY = ((event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5) * 2;
+      };
+      const pointerLeave = () => { targetX = 0; targetY = 0; };
+      if (window.matchMedia("(pointer: fine)").matches && !reducedMotion) {
+        host.addEventListener("pointermove", pointerMove);
+        host.addEventListener("pointerleave", pointerLeave);
+      }
+
+      const render = () => {
+        frameId = 0;
+        if (!renderer || !visible || document.visibilityState !== "visible") return;
+        if (!reducedMotion) {
+          pointerX += (targetX - pointerX) * 0.025;
+          pointerY += (targetY - pointerY) * 0.025;
+          group.rotation.y += 0.0017;
+          group.rotation.x += (pointerY * 0.16 - group.rotation.x) * 0.025;
+          group.rotation.z += (pointerX * 0.08 - group.rotation.z) * 0.025;
+          camera.position.x += (pointerX * 0.18 - camera.position.x) * 0.02;
+          camera.position.y += (-pointerY * 0.14 - camera.position.y) * 0.02;
+        }
+        camera.lookAt(0, 0, 0);
+        renderer.render(scene, camera);
+        if (!reducedMotion) frameId = window.requestAnimationFrame(render);
+      };
+      const start = () => {
+        if (!frameId && !reducedMotion && document.visibilityState === "visible" && visible) {
+          frameId = window.requestAnimationFrame(render);
+        } else if (reducedMotion && document.visibilityState === "visible" && visible && renderer) {
           camera.lookAt(0, 0, 0);
           renderer.render(scene, camera);
         }
       };
 
-      resizeObserver = new ResizeObserver(resize);
-      resizeObserver.observe(host);
-
-      if (window.matchMedia("(pointer: fine)").matches && !reducedMotion) {
-        pointerHandler = (event: PointerEvent) => {
-          const bounds = host.getBoundingClientRect();
-          pointerX = ((event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5) * 2;
-          pointerY = ((event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5) * 2;
-        };
-        pointerLeaveHandler = () => {
-          pointerX = 0;
-          pointerY = 0;
-        };
-        host.addEventListener("pointermove", pointerHandler);
-        host.addEventListener("pointerleave", pointerLeaveHandler);
-      }
-
-      const render = () => {
-        animationFrame = 0;
-        if (document.visibilityState !== "visible" || !isInViewport) return;
-
-        if (!reducedMotion) {
-          group.rotation.y += 0.0018;
-          group.rotation.x += (pointerY * 0.16 - group.rotation.x) * 0.025;
-          group.rotation.z += (pointerX * 0.08 - group.rotation.z) * 0.025;
-          group.rotation.y += scrollState.turn * 0.001;
-          camera.position.x += (pointerX * 0.2 - camera.position.x) * 0.02;
-          camera.position.y += (-pointerY * 0.16 - camera.position.y) * 0.02;
-        }
-        camera.lookAt(0, 0, 0);
-        renderer.render(scene, camera);
-        if (!reducedMotion) {
-          animationFrame = window.requestAnimationFrame(render);
-        }
-      };
-
-      const startRendering = () => {
-        if (!animationFrame && document.visibilityState === "visible" && isInViewport) {
-          animationFrame = window.requestAnimationFrame(render);
-        }
-      };
-
       if ("IntersectionObserver" in window) {
         intersectionObserver = new IntersectionObserver(([entry]) => {
-          isInViewport = Boolean(entry?.isIntersecting);
-          if (isInViewport) {
-            startRendering();
-          } else if (animationFrame) {
-            window.cancelAnimationFrame(animationFrame);
-            animationFrame = 0;
+          visible = Boolean(entry?.isIntersecting);
+          if (visible) start();
+          else if (frameId) {
+            window.cancelAnimationFrame(frameId);
+            frameId = 0;
           }
         }, { threshold: 0.01 });
         intersectionObserver.observe(host);
       }
 
-      visibilityHandler = () => {
-        if (document.visibilityState === "hidden") {
-          if (animationFrame) window.cancelAnimationFrame(animationFrame);
-          animationFrame = 0;
+      const visibilityChange = () => {
+        if (document.visibilityState === "hidden" && frameId) {
+          window.cancelAnimationFrame(frameId);
+          frameId = 0;
         } else {
-          startRendering();
+          start();
         }
       };
-      document.addEventListener("visibilitychange", visibilityHandler);
-
-      if (!reducedMotion) {
-        gsap.fromTo(group.scale, { x: 0.72, y: 0.72, z: 0.72 }, {
-          x: 1, y: 1, z: 1, duration: 1.7, delay: 0.2, ease: "power3.out",
-        });
-        scrollTween = gsap.to(scrollState, {
-          turn: 1,
-          ease: "none",
-          scrollTrigger: { id: "hero-scene-scroll", trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
-        });
-      }
+      document.addEventListener("visibilitychange", visibilityChange);
+      removeRuntimeListeners = () => {
+        host.removeEventListener("pointermove", pointerMove);
+        host.removeEventListener("pointerleave", pointerLeave);
+        document.removeEventListener("visibilitychange", visibilityChange);
+      };
 
       host.dataset.ready = "true";
-      startRendering();
+      start();
     } catch {
       host.dataset.state = "fallback";
     }
 
     return () => {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      removeRuntimeListeners();
+      if (frameId) window.cancelAnimationFrame(frameId);
       resizeObserver?.disconnect();
       intersectionObserver?.disconnect();
-      if (pointerHandler) host.removeEventListener("pointermove", pointerHandler);
-      if (pointerLeaveHandler) host.removeEventListener("pointerleave", pointerLeaveHandler);
-      if (visibilityHandler) document.removeEventListener("visibilitychange", visibilityHandler);
-      ScrollTrigger.getById("hero-scene-scroll")?.kill();
-      scrollTween?.kill();
-      if (group) gsap.killTweensOf(group.scale);
-      scene?.traverse((object: any) => {
-        object.geometry?.dispose?.();
-        if (object.material) {
-          const materials = Array.isArray(object.material) ? object.material : [object.material];
-          materials.forEach((material: any) => material?.dispose?.());
-        }
-      });
-      renderer?.dispose?.();
-      renderer?.domElement?.remove();
+      geometries.forEach((geometry) => geometry.dispose());
+      materials.forEach((material) => material.dispose());
+      renderer?.dispose();
+      renderer?.domElement.remove();
     };
   }, []);
 

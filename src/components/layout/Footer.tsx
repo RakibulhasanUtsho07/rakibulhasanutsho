@@ -11,12 +11,14 @@ export default function Footer() {
               <span className="brand-mark">U</span>
               <span className="brand-name">UTSHO<span>.DEV</span></span>
             </Link>
-            <p>Thoughtful engineering for the modern web.</p>
+            <p>Backend engineering for useful digital products.</p>
           </div>
           <nav className="footer-links" aria-label="Social links">
             <a href={site.githubUrl} target="_blank" rel="noreferrer">GitHub ↗</a>
             <a href={site.linkedinUrl} target="_blank" rel="noreferrer">LinkedIn ↗</a>
             <a href={site.realFoodsUrl} target="_blank" rel="noreferrer">Real Foods ↗</a>
+            <a href={site.agencyUrl} target="_blank" rel="noreferrer">Pixel & Code ↗</a>
+            <a href={site.emailUrl}>Email ↗</a>
           </nav>
         </div>
         <div className="footer-bottom">

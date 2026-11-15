@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./redesign.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,24 +18,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Rakibul Hasan Utsho — Full-Stack Developer",
+    default: "Rakibul Hasan Utsho — Backend Developer",
     template: "%s | Utsho.dev",
   },
   description:
-    "Portfolio of Rakibul Hasan Utsho, a Bangladesh-based full-stack developer building thoughtful interfaces, reliable APIs, and polished digital products.",
+    "Portfolio of Rakibul Hasan Utsho, a Bangladesh-based backend developer building REST APIs, backend services, and thoughtful full-stack products.",
   applicationName: "Utsho.dev",
   keywords: [
     "Rakibul Hasan Utsho",
-    "Full-Stack Developer",
-    "MERN Developer",
-    "Next.js",
-    "React",
+    "Backend Developer",
+    "Node.js",
+    "Express.js",
+    "PostgreSQL",
+    "MongoDB",
+    "Redis",
     "TypeScript",
-    "GSAP",
-    "Three.js",
-    "Framer Motion",
-    "Digital Wallet",
-    "SaaS",
+    "REST APIs",
+    "Full-Stack Developer",
   ],
   authors: [{ name: "Rakibul Hasan Utsho" }],
   creator: "Rakibul Hasan Utsho",
@@ -42,18 +42,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Utsho.dev",
-    title: "Rakibul Hasan Utsho — Full-Stack Developer",
-    description: "Full-stack engineering, interactive interfaces, and digital product experiences.",
+    title: "Rakibul Hasan Utsho — Backend Developer",
+    description: "Backend services, REST APIs, data systems, and useful digital products.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rakibul Hasan Utsho — Full-Stack Developer",
-    description: "Full-stack engineering, interactive interfaces, and 3D web experiments.",
+    title: "Rakibul Hasan Utsho — Backend Developer",
+    description: "Backend engineering, REST APIs, and full-stack product work.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080c16",
+  themeColor: "#0c0d0f",
   colorScheme: "dark",
 };
 
