@@ -10,6 +10,7 @@ export default function PortfolioMotion() {
     const motionPreference = gsap.matchMedia();
 
     motionPreference.add("(prefers-reduced-motion: no-preference)", () => {
+      const cleanups: Array<() => void> = [];
       const context = gsap.context(() => {
         const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -31,6 +32,19 @@ export default function PortfolioMotion() {
             scale: 1,
             duration: 1.1,
           }, 0.36);
+
+        gsap.utils.toArray<HTMLElement>("[data-count]").forEach((element) => {
+          const target = Number(element.dataset.count ?? "0");
+          const counter = { value: 0 };
+          element.textContent = "00";
+          gsap.to(counter, {
+            value: target,
+            duration: 1.25,
+            delay: 1.05,
+            ease: "power2.out",
+            onUpdate: () => { element.textContent = String(Math.round(counter.value)).padStart(2, "0"); },
+          });
+        });
 
         gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
           gsap.fromTo(element, { y: 32, opacity: 0, scale: 0.99, filter: "blur(6px)" }, {
@@ -98,37 +112,63 @@ export default function PortfolioMotion() {
         gsap.to(".hero-scene-orbit--outer", {
           rotation: 42,
           ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1,
-          },
+          scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
         });
 
         gsap.to(".hero-scene-orbit--inner", {
           rotation: -55,
           scale: 0.88,
           ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1,
-          },
+          scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 1 },
         });
 
-        gsap.to(".about-monogram", {
-          y: -18,
-          rotation: 3,
+        gsap.to(".about-portrait-frame", {
+          y: -12,
           ease: "none",
-          scrollTrigger: {
-            trigger: ".about-section",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8,
-          },
+          scrollTrigger: { trigger: ".about-section", start: "top bottom", end: "bottom top", scrub: 0.8 },
         });
+
+        // Subtle portrait tilt on pointer devices; touch users keep a stable image.
+        const portrait = document.querySelector<HTMLElement>(".about-portrait-frame");
+        if (portrait && window.matchMedia("(pointer: fine)").matches) {
+          gsap.set(portrait, { transformPerspective: 1000, transformStyle: "preserve-3d" });
+          const rotateXTo = gsap.quickTo(portrait, "rotationX", { duration: 0.45, ease: "power3.out" });
+          const rotateYTo = gsap.quickTo(portrait, "rotationY", { duration: 0.45, ease: "power3.out" });
+          const move = (event: PointerEvent) => {
+            const bounds = portrait.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5;
+            const y = (event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5;
+            rotateXTo(-y * 5);
+            rotateYTo(x * 5);
+          };
+          const reset = () => { rotateXTo(0); rotateYTo(0); };
+          portrait.addEventListener("pointermove", move);
+          portrait.addEventListener("pointerleave", reset);
+          cleanups.push(() => {
+            portrait.removeEventListener("pointermove", move);
+            portrait.removeEventListener("pointerleave", reset);
+          });
+        }
+
+        // Small magnetic response on primary actions, limited to fine pointers.
+        if (window.matchMedia("(pointer: fine)").matches) {
+          gsap.utils.toArray<HTMLElement>(".button-primary").forEach((button) => {
+            const xTo = gsap.quickTo(button, "x", { duration: 0.35, ease: "power3.out" });
+            const yTo = gsap.quickTo(button, "y", { duration: 0.35, ease: "power3.out" });
+            const move = (event: PointerEvent) => {
+              const bounds = button.getBoundingClientRect();
+              xTo(((event.clientX - bounds.left) / Math.max(bounds.width, 1) - 0.5) * 7);
+              yTo(((event.clientY - bounds.top) / Math.max(bounds.height, 1) - 0.5) * 5);
+            };
+            const reset = () => { xTo(0); yTo(0); };
+            button.addEventListener("pointermove", move);
+            button.addEventListener("pointerleave", reset);
+            cleanups.push(() => {
+              button.removeEventListener("pointermove", move);
+              button.removeEventListener("pointerleave", reset);
+            });
+          });
+        }
       });
 
       const desktopMotion = gsap.matchMedia();
@@ -146,17 +186,13 @@ export default function PortfolioMotion() {
           scale: 1.025,
           rotationY: 2,
           ease: "none",
-          scrollTrigger: {
-            trigger: ".featured-project",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8,
-          },
+          scrollTrigger: { trigger: ".featured-project", start: "top bottom", end: "bottom top", scrub: 0.8 },
         });
       });
 
       requestAnimationFrame(() => ScrollTrigger.refresh());
       return () => {
+        cleanups.forEach((cleanup) => cleanup());
         context.revert();
         desktopMotion.revert();
       };
