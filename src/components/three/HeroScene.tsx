@@ -40,15 +40,16 @@ export default function HeroScene() {
       const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
       camera.position.set(0, 0, 6.8);
 
-      renderer = new THREE.WebGLRenderer({
+      const rendererInstance: RendererHandle = new THREE.WebGLRenderer({
         alpha: true,
         antialias: window.devicePixelRatio < 2,
         powerPreference: "low-power",
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      renderer.setSize(Math.max(host.clientWidth, 1), Math.max(host.clientHeight, 1), false);
-      renderer.setClearColor(0x0c0d0f, 0);
-      host.appendChild(renderer.domElement);
+      renderer = rendererInstance;
+      rendererInstance.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      rendererInstance.setSize(Math.max(host.clientWidth, 1), Math.max(host.clientHeight, 1), false);
+      rendererInstance.setClearColor(0x0c0d0f, 0);
+      host.appendChild(rendererInstance.domElement);
 
       const group = new THREE.Group();
       scene.add(group);
