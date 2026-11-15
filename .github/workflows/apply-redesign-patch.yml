@@ -1,0 +1,58 @@
+name: Apply portfolio redesign patch
+
+on:
+  push:
+    branches:
+      - redesign/portfolio-20261115
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Extract the eight approved patch files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          files = (
+              "src/app/page.tsx",
+              "src/app/layout.tsx",
+              "src/app/redesign.css",
+              "src/components/layout/Footer.tsx",
+              "src/components/motion/PortfolioMotion.tsx",
+              "src/components/three/HeroScene.tsx",
+              "src/data/site.ts",
+              "public/images/utsho-portrait.webp",
+          )
+
+          archive_path = Path(".tmp/portfolio-redesign-patch.zip")
+          with ZipFile(archive_path) as archive:
+              available = set(archive.namelist())
+              missing = set(files) - available
+              if missing:
+                  raise SystemExit(f"Patch archive is missing: {sorted(missing)}")
+
+              for name in files:
+                  destination = Path(name)
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  destination.write_bytes(archive.read(name))
+          PY
+
+      - name: Commit the patch and remove transfer files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- src/app/page.tsx src/app/layout.tsx src/app/redesign.css src/components/layout/Footer.tsx src/components/motion/PortfolioMotion.tsx src/components/three/HeroScene.tsx src/data/site.ts public/images/utsho-portrait.webp
+          git rm -- .tmp/portfolio-redesign-patch.zip .github/workflows/apply-redesign-patch.yml
+          git commit -m "feat: redesign Utsho.dev portfolio"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
