@@ -10,64 +10,82 @@ const chartBars = [32, 52, 39, 73, 46, 88, 59, 66, 44, 81, 57, 93];
 export default function ProjectVisual({ variant, compact = false }: ProjectVisualProps) {
   const classes = "project-visual" + (compact ? " project-visual--compact" : "");
 
-  if (variant === "payment") {
+  if (variant === "job-tracker") {
     return (
-      <div className={classes + " project-visual--payment"} aria-label="Stylised digital wallet dashboard preview">
-        <div className="payment-sidebar"><span className="payment-logo" />{[0, 1, 2, 3, 4].map((item) => <span className={"payment-side-dot" + (item === 0 ? " active" : "")} key={item} />)}</div>
-        <div className="payment-main">
-          <div className="payment-topline"><span>Overview</span><span>WALLET / ADMIN</span></div>
-          <div className="payment-balance">
-            <div className="payment-balance-label">FINANCIAL OPERATIONS</div><div className="payment-balance-amount">Wallet analytics</div>
-            <div className="payment-balance-line"><span /><span /><span /></div>
+      <div className={classes + " project-visual--jobs"} aria-label="Stylised job-tracking dashboard preview">
+        <div className="jobs-sidebar">
+          <span className="jobs-brand-mark">H</span>
+          <span className="jobs-nav-item jobs-nav-item--active" />
+          <span className="jobs-nav-item" />
+          <span className="jobs-nav-item" />
+          <span className="jobs-nav-item" />
+        </div>
+        <div className="jobs-main">
+          <div className="jobs-topbar"><span>Candidate workspace</span><span className="jobs-avatar">U</span></div>
+          <div className="jobs-heading"><div><span className="jobs-eyebrow">YOUR NEXT CHAPTER</span><strong>Application overview</strong></div><span className="jobs-demo-pill">DEMO DATA</span></div>
+          <div className="jobs-stat-grid">
+            <div><span>Applications</span><strong>08</strong><i /></div>
+            <div><span>In review</span><strong>03</strong><i /></div>
+            <div><span>Next step</span><strong>02</strong><i /></div>
           </div>
-          <div className="payment-lower">
-            <div className="payment-mini-panel"><div className="payment-mini-title">Activity</div><div className="payment-bars">{chartBars.slice(0, 6).map((height, index) => <span key={index} style={{ height: height + "%" }} />)}</div></div>
-            <div className="payment-mini-panel"><div className="payment-mini-title">Transactions</div><div className="payment-bars">{chartBars.slice(6).map((height, index) => <span key={index} style={{ height: height + "%" }} />)}</div></div>
+          <div className="jobs-list">
+            <div className="jobs-list-title"><strong>Recent applications</strong><span>VIEW ALL ↗</span></div>
+            <div className="jobs-list-row"><b className="jobs-company jobs-company--one">N</b><span><strong>Frontend Developer</strong><small>Northstar Careers · Remote</small></span><i className="jobs-status jobs-status--review">In review</i></div>
+            <div className="jobs-list-row"><b className="jobs-company jobs-company--two">A</b><span><strong>Product Engineer</strong><small>Atlas Studio · Hybrid</small></span><i className="jobs-status jobs-status--sent">Submitted</i></div>
           </div>
         </div>
       </div>
     );
   }
 
-  if (variant === "lesson") {
+  if (variant === "agency") {
     return (
-      <div className={classes + " project-visual--lesson"} aria-label="Stylised LessonUp application preview">
-        <div className="lesson-topline"><span>LESSONUP</span><span>COLLECT · REFLECT · GROW</span></div>
-        <div className="lesson-hero-copy">
-          <span className="lesson-pill">A LITTLE WISDOM, EVERY DAY</span>
-          <h4>Small lessons.<br /><em>Meaningful growth.</em></h4>
-          <p>Keep the ideas that move you forward.</p>
+      <div className={classes + " project-visual--agency"} aria-label="Stylised Pixel and Code agency website preview">
+        <div className="agency-topbar"><span className="agency-brand">PIXEL<span>&</span>CODE</span><span className="agency-nav">SERVICES&nbsp;&nbsp;&nbsp; WORK&nbsp;&nbsp;&nbsp; ABOUT</span><span className="agency-menu">↗</span></div>
+        <div className="agency-hero">
+          <span className="agency-eyebrow">DIGITAL AGENCY · BANGLADESH</span>
+          <strong>Digitize your<br /><em>imagination.</em></strong>
+          <span className="agency-cta">START A PROJECT ↗</span>
         </div>
-        <div className="lesson-cards">
-          <div className="lesson-note lesson-note--violet"><span>01 / MINDSET</span><strong>Progress over perfection</strong><i>Saved to your collection ↗</i></div>
-          <div className="lesson-note lesson-note--blue"><span>02 / PERSPECTIVE</span><strong>Make room for change</strong><i>Community lesson ↗</i></div>
+        <div className="agency-bottom">
+          <div className="agency-tile agency-tile--one"><span>01 / DEVELOPMENT</span><strong>Web & app<br />experiences</strong></div>
+          <div className="agency-tile agency-tile--two"><span>02 / CREATIVE</span><strong>Brand & visual<br />identity</strong></div>
+          <div className="agency-tile agency-tile--three"><span>03 / GROWTH</span><strong>Content &<br />marketing</strong></div>
         </div>
-        <div className="lesson-orb lesson-orb--one" /><div className="lesson-orb lesson-orb--two" />
       </div>
     );
   }
 
   if (variant === "food") {
     return (
-      <div className={classes + " project-visual--food"} aria-label="Stylised Real Foods storefront preview">
+      <div className={classes + " project-visual--food"} aria-label="Stylised Real Foods bakery storefront preview">
         <div className="food-topline"><span>REAL FOODS</span><span>FRESH · SIMPLE · GOOD</span></div>
-        <div className="food-brand">Good food,<br />good days.</div><div className="food-tagline">Freshly made, thoughtfully chosen.</div>
-        <div className="food-products">{["Croissant", "Cookies", "Bakery"].map((name) => <div className="food-product" key={name}><span className="food-product-shape" /><span className="food-product-name">{name}</span></div>)}</div>
+        <div className="food-brand">Good food,<br />good days.</div>
+        <div className="food-tagline">Freshly made, thoughtfully chosen.</div>
+        <div className="food-products">
+          {["Croissant", "Cookies", "Bakery"].map((name) => (
+            <div className="food-product" key={name}><span className="food-product-shape" /><span className="food-product-name">{name}</span></div>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={classes + " project-visual--sports"} aria-label="Stylised sports facility booking preview">
-      <div className="sports-topline"><span>SPORTSGROUND</span><span>FIND YOUR GAME</span></div>
-      <div className="sports-heading">Your next game<br /><em>starts here.</em></div>
-      <p className="sports-subtitle">Find a space. Bring your team.</p>
-      <div className="sports-facility">
-        <div className="sports-court-art"><span /><i /><b /></div>
-        <div className="sports-facility-info"><span className="sports-facility-label">FEATURED FACILITY</span><strong>Indoor court</strong><small>Available slots · Today</small></div>
-        <span className="sports-facility-arrow">↗</span>
+    <div className={classes + " project-visual--payment"} aria-label="Stylised digital wallet landing-page preview">
+      <div className="payment-sidebar"><span className="payment-logo" />{[0, 1, 2, 3, 4].map((item) => <span className={"payment-side-dot" + (item === 0 ? " active" : "")} key={item} />)}</div>
+      <div className="payment-main">
+        <div className="payment-topline"><span>Wallet interface</span><span>PRODUCT / UI</span></div>
+        <div className="payment-balance">
+          <div className="payment-balance-label">DIGITAL PAYMENT EXPERIENCE</div>
+          <div className="payment-balance-amount">Move money, made clear.</div>
+          <div className="payment-balance-line"><span /><span /><span /></div>
+        </div>
+        <div className="payment-lower">
+          <div className="payment-mini-panel"><div className="payment-mini-title">Feature highlights</div><div className="payment-bars">{chartBars.slice(0, 6).map((height, index) => <span key={index} style={{ height: height + "%" }} />)}</div></div>
+          <div className="payment-mini-panel"><div className="payment-mini-title">Product sections</div><div className="payment-bars">{chartBars.slice(6).map((height, index) => <span key={index} style={{ height: height + "%" }} />)}</div></div>
+        </div>
       </div>
-      <div className="sports-time-slots"><span>09:00 AM</span><span>11:30 AM</span><span>04:00 PM</span></div>
     </div>
   );
 }

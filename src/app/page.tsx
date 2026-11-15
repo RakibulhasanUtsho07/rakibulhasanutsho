@@ -123,7 +123,7 @@ export default function Home() {
                 <p className="section-kicker"><span>02</span> / SELECTED WORK</p>
                 <h2 className="section-title" id="work-title">Practical ideas.<br /><em>Thoughtful engineering.</em></h2>
               </div>
-              <p className="section-intro">A selection of product work across digital payments, SaaS, food commerce, and booking workflows — with a focus on useful functionality and clear technical decisions.</p>
+              <p className="section-intro">A selection of work across digital-payment interfaces, recruitment workflows, digital services, and food-commerce experiences — with clear technical decisions and honest project scope.</p>
             </div>
 
             <article className="featured-project" data-reveal>
@@ -133,7 +133,7 @@ export default function Home() {
                   <span className="project-status"><span className="status-pulse" /> {featuredProject.status.toUpperCase()}</span>
                 </div>
                 <p className="project-category">{featuredProject.category.toUpperCase()}</p>
-                <h3>{featuredProject.title}<br /><em>Backend services & product workflows.</em></h3>
+                <h3>{featuredProject.title}<br /><em>Product storytelling & responsive interface design.</em></h3>
                 <p className="project-description">{featuredProject.summary}</p>
                 <div className="tag-list">{featuredProject.stack.slice(0, 6).map((item) => <span className="tech-tag" key={item}>{item}</span>)}</div>
                 <div className="project-actions">
@@ -219,7 +219,7 @@ export default function Home() {
               <p className="section-kicker"><span>05</span> / A LITTLE ABOUT ME</p>
               <h2 className="section-title" id="about-title">Curious about systems.<br /><em>Focused on useful software.</em></h2>
               <p>I’m an honours student and full-stack developer based in Bangladesh, focused on backend services, REST APIs, and data-driven web applications.</p>
-              <p>My project work includes a digital payment platform, a food and e-commerce application, and a responsive digital-agency website. I enjoy troubleshooting, learning new business domains, and working with people to move projects forward.</p>
+              <p>My project work spans a digital-wallet interface, a full-stack job-tracking application, a bakery storefront prototype, and a digital-agency website. I enjoy troubleshooting, learning new business domains, and working with people to move projects forward.</p>
               <div className="about-education">
                 <span className="about-detail-label">EDUCATION</span>
                 <span>Bachelor of Honours (1st Year) · National University, Bangladesh · In Progress</span>
