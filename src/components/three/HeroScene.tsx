@@ -3,6 +3,17 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
+type DisposableResource = { dispose: () => void };
+type AdjustableMaterial = DisposableResource & { transparent: boolean; opacity: number };
+type RendererHandle = {
+  domElement: HTMLCanvasElement;
+  setPixelRatio: (ratio: number) => void;
+  setSize: (width: number, height: number, updateStyle?: boolean) => void;
+  setClearColor: (color: number, alpha?: number) => void;
+  render: (scene: unknown, camera: unknown) => void;
+  dispose: () => void;
+};
+
 export default function HeroScene() {
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -11,7 +22,7 @@ export default function HeroScene() {
     if (!host) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let renderer: THREE.WebGLRenderer | null = null;
+    let renderer: RendererHandle | null = null;
     let frameId = 0;
     let resizeObserver: ResizeObserver | null = null;
     let intersectionObserver: IntersectionObserver | null = null;
@@ -21,8 +32,8 @@ export default function HeroScene() {
     let targetX = 0;
     let targetY = 0;
     let removeRuntimeListeners = () => {};
-    const geometries: THREE.BufferGeometry[] = [];
-    const materials: THREE.Material[] = [];
+    const geometries: DisposableResource[] = [];
+    const materials: AdjustableMaterial[] = [];
 
     try {
       const scene = new THREE.Scene();
@@ -118,8 +129,8 @@ export default function HeroScene() {
       geometries.push(floorGrid.geometry);
       floorGrid.rotation.x = Math.PI / 2;
       floorGrid.position.z = -1.8;
-      const gridMaterials = Array.isArray(floorGrid.material) ? floorGrid.material : [floorGrid.material];
-      gridMaterials.forEach((material) => {
+      const gridMaterials = (Array.isArray(floorGrid.material) ? floorGrid.material : [floorGrid.material]) as AdjustableMaterial[];
+      gridMaterials.forEach((material: AdjustableMaterial) => {
         material.transparent = true;
         material.opacity = 0.22;
         materials.push(material);
