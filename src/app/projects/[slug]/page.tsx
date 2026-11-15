@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import PortfolioMotion from "@/components/motion/PortfolioMotion";
-import ProjectCard from "@/components/projects/ProjectCard";
+import ProjectCard from "@/components/ui/ProjectCard";
 import ProjectVisual from "@/components/ui/ProjectVisual";
 import { projects } from "@/data/projects";
 
