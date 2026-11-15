@@ -1,24 +1,24 @@
 # Utsho.dev — Developer Portfolio
 
-An immersive, motion-led portfolio for Rakibul Hasan Utsho, a Bangladesh-based full-stack developer.
+An immersive, motion-led portfolio for Rakibul Hasan Utsho, a Bangladesh-based backend-focused full-stack developer.
 
 ## Experience
 
-- Four curated GitHub projects spanning fintech, SaaS, food commerce, and facility booking.
+- Four curated case studies spanning a digital-payment interface, a candidate/recruiter job-tracking demo, a digital-agency website, and a bakery storefront prototype.
 - Scroll-driven page reveals with GSAP and ScrollTrigger.
 - A lazy-loaded Three.js hero scene with animated wireframe geometry, pointer parallax, and reduced-motion support.
-- Dedicated case-study pages with direct source links, technology stacks, project scope, and relevant contribution notes.
+- Redesigned project case-study pages with documented scope, technology profile, source/live links, limitations, and next steps.
 - Responsive project cards with subtle pointer tilt and cursor-following light.
 - SEO metadata, responsive navigation, accessible links, and fallback artwork if WebGL cannot initialize.
 
 ## Selected project case studies
 
-- **Digital Wallet & Payment Platform** — Next.js interface with a companion TypeScript/Express API repository. The frontend contribution is stated separately from broader platform functionality.
-- **LessonUp** — Full-stack life-lessons app with authentication, moderation, premium content, and Stripe Checkout in test mode.
-- **Real Foods** — Food storefront with customer ordering flows and admin product-management screens.
-- **SportsGround** — Sports-facility discovery and booking workflows with separate frontend and backend repositories.
+- **Digital Wallet & Payment Interface** — Responsive Next.js landing-page experience. The repository documents frontend UI work, not payment processing or real wallet transactions.
+- **HireFlow — Job Tracker** — Full-stack Next.js/PostgreSQL candidate and recruiter workflow demo with private resume handling and explainable keyword matching. The source README identifies its careers data as fictional demo content and documents production follow-ups.
+- **Pixel & Code — Agency Website** — Public website for a Bangladesh-based digital agency, presenting development, creative and marketing services, portfolio, and delivery process.
+- **Real Foods — Bakery Storefront UI** — Storefront prototype with an animated bakery-category hero and featured product cards. The repository currently uses in-file mock product data.
 
-The artwork on the project cards is a stylised visual preview, not a screenshot or a claim that every pictured interface is currently deployed. Project descriptions distinguish documented features from verification steps and future work.
+The artwork on project cards and case-study pages is a stylised visual preview, not a screenshot or a claim that every pictured interface is currently deployed. Project descriptions distinguish documented implementation from demo data, unverified behaviour, and future work.
 
 ## Stack
 
@@ -42,7 +42,7 @@ npm run build
 
 ## Project content
 
-Project descriptions, selected GitHub repositories, related links, and technology tags are maintained in `src/data/projects.ts`. Personal links and contact details live in `src/data/site.ts`.
+Project descriptions, selected GitHub repositories, live demos, related links, technologies, and scope notes are maintained in `src/data/projects.ts`. Personal links and contact details live in `src/data/site.ts`.
 
 The Three.js hero is decorative and lazy-loaded. The page remains useful without WebGL and respects the user's reduced-motion preference.
 
